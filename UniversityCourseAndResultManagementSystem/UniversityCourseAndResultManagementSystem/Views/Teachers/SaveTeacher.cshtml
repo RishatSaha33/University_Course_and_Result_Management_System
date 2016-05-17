@@ -1,0 +1,123 @@
+﻿@model UniversityCourseAndResultManagementSystem.Models.Teacher
+
+@{
+    ViewBag.Title = "SaveTeacher";
+    string msg = ViewBag.Message;
+}
+<style>
+    label.error, .messageLabel {
+        color: #B94A48;
+        font-style: normal;
+        font-family: Helvetica;
+        font-size: 12px;
+    }
+</style>
+
+
+@using (Html.BeginForm("SaveTeacher","Teachers",FormMethod.Post,new {id="saveTeacherForm"})) 
+{
+    @Html.AntiForgeryToken()
+    <h4>Save Teacher</h4>
+    <div class="form-horizontal">
+        
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes=new{ @class = "form-control", @id = "Name", name = "Name" }})
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address, new { htmlAttributes=new{ @class = "form-control", @id = "Address", name = "Address"} })
+                @Html.ValidationMessageFor(model => model.Address)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TeacherEmail, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TeacherEmail, new { htmlAttributes=new{@class = "form-control", @id = "TeacherEmail", @name = "TeacherEmail" }})
+                @*@Html.ValidationMessageFor(model => model.TeacherEmail)*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TeacherContactInfo, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TeacherContactInfo, new {htmlAttributes=new{ @class = "form-control", @id = "TeacherContactInfo", @name = "TeacherContactInfo"} })
+                @Html.ValidationMessageFor(model => model.TeacherContactInfo)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TeacherCredit, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TeacherCredit, new {htmlAttributes=new {@class = "form-control", @id = "TeacherCredit", @name = "TeacherCredit" }})
+                @Html.ValidationMessageFor(model => model.TeacherCredit)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DesignationId, "Designation", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DesignationId", new SelectList(ViewBag.DesignationId, "Id", "DesignationName "), "--Select Designation--", new { htmlAttributes = new { @class = "form-control", @placeholder = "DesignationId", @id = "DesignationId", @name = "DesignationId" } })
+                @Html.ValidationMessageFor(model => model.DesignationId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DepartmentId, "Department", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DepartmentId", new SelectList(ViewBag.DepartmentId, "Id", "DeptName"), "--Select Department--", new { htmlAttributes = new { @class = "form-control", @placeholder = "DepartmentId", @id = "DepartmentId", @name = "DepartmentId" }})
+                @Html.ValidationMessageFor(model => model.DepartmentId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default"/>
+            </div>
+            <div style="color: green">
+                <p>@msg</p>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to View Teacher information", "ViewTeacher")
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#Name').val("");
+            $('#Address').val("");
+            $('#TeacherEmail').val("");
+            $('#TeacherContactInfo').val("");
+            $('#TeacherCredit').val("");
+            $('#DesignationId').val("");
+            $('#DepartmentId').val("");
+            $("#saveTeacherForm").validate({
+                rules: {
+                    DesignationId: "required",
+                    DepartmentId: "required"
+                },
+                messages: {
+                    DesignationId: "Please select a Designation",
+                    DepartmentId: "Please select a Department"
+                }
+            });
+
+        });
+    </script>
+}

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<UniversityCourseAndResultManagementSystem.Models.Departmrnt>
+
+@{
+    ViewBag.Title = "viewDepartment";
+}
+
+<h4></h4>
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+<div>
+    <p>
+        @Html.ActionLink("Go to save Department", "SaveDepartment")
+    </p>
+    <h4>View All Department</h4>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DeptCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeptName)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeptCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeptName)
+                </td>
+
+            </tr>
+        }
+
+    </table>
+</div>
+</body>
+</html>
+
+

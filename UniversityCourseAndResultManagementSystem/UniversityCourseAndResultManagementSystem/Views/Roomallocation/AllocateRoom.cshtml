@@ -1,0 +1,154 @@
+﻿@model UniversityCourseAndResultManagementSystem.Models.RoomAllocation
+
+@{
+    ViewBag.Title = "AllocateRoom";
+}
+<link href="~/Content/jquery.timeentry.css" rel="stylesheet" />
+<style>
+    label.error, .messageLabel {
+        color: #B94A48;
+        font-style: normal;
+        font-family: Helvetica;
+        font-size: 12px;
+    }
+</style>
+
+
+@using (Html.BeginForm("AllocateRoom", "Roomallocation", FormMethod.Post, new { Id = "allocateClassroomForm"})) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Room Allocation</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+        
+        
+        
+        <div class="form-group ">
+            @Html.LabelFor(model => model.DepartmentId, "Department", new { @class = "control-label col-md-2" })
+            <div class="col-md-10 ">
+                
+                    @Html.DropDownList("DepartmentId", String.Empty)
+                
+               
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CourseId, "Course", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="courseId" name="courseId">
+                    <option value="">--Select a Course--</option>
+                </select>
+               @* @Html.ValidationMessageFor(model => model.CourseId, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RoomId, "Room No.", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("RoomId",String.Empty)
+               @* @Html.ValidationMessageFor(model => model.RoomId)*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DayId, "Day", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DayId", String.Empty)
+               @* @Html.ValidationMessageFor(model => model.DayId)*@
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("From", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Editor("StartTime", new { htmlAttributes = new { @class = "form-control" } })
+               @* @Html.ValidationMessage("StartTime", "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("To", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Editor("EndTime", new { htmlAttributes = new { @class = "form-control" } })
+                @*@Html.ValidationMessage("EndTime", "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Allocate" class="btn btn-default"/>
+            </div>
+        </div>
+        <div class="form-group" id="message">
+            <div class="col-md-offset-2 col-md-10" style="color: GREEN">
+                <label>@ViewBag.SuccessMessage</label>
+            </div>
+            <div class="col-md-offset-2 col-md-10" style="color: #B94A48">
+                <label>@ViewBag.FailMessage</label>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("View Allocation information", "Index")
+</div>
+@section Scripts {
+    <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.timeentry.package-2.0.1/jquery.plugin.js"></script>
+    <script src="~/Scripts/jquery.timeentry.package-2.0.1/jquery.timeentry.min.js"></script>
+    <script src="~/Scripts/jquery.mousewheel.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#DepartmentId').val("");
+            $('#courseId').val("");
+            $('#RoomId').val("");
+            $('#DayId').val("");
+            $('#StartTime').val("");
+            $('#EndTime').val("");
+                $('#message').delay(10000).fadeOut();
+                $("#StartTime").timeEntry({ timeSteps: [1, 5, 0], useMouseWheel: true });
+                $("#EndTime").timeEntry({ timeSteps: [1, 5, 0], useMouseWheel: true });
+                $("#allocateClassroomForm").validate({
+                    rules: {
+                        DepartmentId: "required",
+                        courseId: "required",
+                        RoomId: "required",
+                        DayId: "required",
+                        StartTime: "required",
+                        EndTime: "required"
+                       
+                    },
+                    messages: {
+                        DepartmentId: "Please select a Department",
+                        courseId: "Please select a Course",
+                        RoomId: "Please select a Room",
+                        DayId: "Please select a Day",
+                        StartTime: "Please enter when class will start",
+                        EndTime: "Please enter when class will end"
+                        
+                    }
+                });
+
+                $("#DepartmentId").change(function () {
+                    var deptId = $("#DepartmentId").val();
+                    var json = { departmentId: deptId };
+                    $('#courseId').empty();
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetCoursesByDepartmentId", "Roomallocation")',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(json),
+                        success: function (data) {
+                            $("#courseId").append('<option value="">--Select a Course--</option>');
+                            $.each(data, function (key, value) {
+                                $("#courseId").append('<option value=' + value.Value + '>' + value.Text + '</option>');
+                            });
+                        }
+                    });
+                });
+            });
+    </script>
+}

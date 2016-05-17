@@ -1,0 +1,117 @@
+﻿@using System.Web.UI.WebControls
+@model UniversityCourseAndResultManagementSystem.Models.Student
+
+@{
+    ViewBag.Title = "RegisterStudent";
+}
+<link href="~/Content/bootstrap-datepicker.min.css" rel="stylesheet" />
+<style>
+    label.error, .messageLabel {
+        color: #B94A48;
+        font-style: normal;
+        font-family: Helvetica;
+        font-size: 12px;
+    }
+</style>
+
+
+@using (Html.BeginForm("RegisterStudent","Students",FormMethod.Post,new{id="myForm"}))
+{
+    @Html.AntiForgeryToken()
+<h4>Register student</h4>
+    <div class="form-horizontal">
+      
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StudentName, "Name", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StudentName, new { htmlAttributes = new { @class = "form-control", @id = "StudentName", @name = "StudentName" } })
+                @Html.ValidationMessageFor(model => model.StudentName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StudentEmail, "Email", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StudentEmail, new { htmlAttributes = new { @class = "form-control", @id = "StudentEmail", @name = "StudentEmail" } })
+                @Html.ValidationMessageFor(model => model.StudentEmail)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StudentContactNo, "ContactNo", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StudentContactNo, new { htmlAttributes = new { @class = "form-control", @id = "StudentContactNo", @name = "StudentContactNo" } })
+                @Html.ValidationMessageFor(model => model.StudentContactNo)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RegistrationDate, "Date", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RegistrationDate, new { htmlAttributes = new { @class = "form-control", @id = "RegistrationDate", @name = "RegistrationDate" } })
+                @Html.ValidationMessageFor(model => model.RegistrationDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StudentAddress, "Address", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StudentAddress, new { htmlAttributes = new { @class = "form-control", @id = "StudentAddress", @name = "StudentAddress" } })
+                @Html.ValidationMessageFor(model => model.StudentAddress)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DepartmentId, "Department", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DepartmentId", new SelectList(ViewBag.Departments, "Id", "DeptName"), "--Enter Department--", String.Empty)
+                @*@Html.ValidationMessageFor(model => model.DepartmentId)*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Register" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<div>@ViewBag.Message</div>
+<div>
+    @Html.ActionLink("Back to List", "ViewStudent", "Students")
+</div>
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#StudentName').val("");
+            $('#StudentEmail').val("");
+            $('#StudentContactNo').val("");
+            $('#RegistrationDate').val("");
+            $('#StudentAddress').val("");
+            $('#DepartmentId').val("");
+
+            $("#myForm").validate({
+                rules: {
+                    DepartmentId: "required"
+                },
+                messages: {
+                    
+                    DepartmentId: "Please select a Department"
+                }
+            });
+            $('#RegistrationDate').datepicker({
+                format: "dd/mm/yyyy",
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+    </script>
+}

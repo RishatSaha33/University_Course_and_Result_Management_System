@@ -1,0 +1,104 @@
+﻿@model UniversityCourseAndResultManagementSystem.Models.Course
+@{
+    ViewBag.Title = "CoursesInformation";
+}
+
+
+@using (Html.BeginForm("AssignCourse", "Courses", FormMethod.Post, new { id = "courseInfoForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="form-group">
+
+        </div>
+        <fieldset>
+            <legend>
+                View Course Statistics
+            </legend>
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DepartmentId, "Department", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("DepartmentId", null, "--Select Department--", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <fieldset>
+                <legend>
+                    Course Information
+                </legend>
+
+                <div class="form-group">
+                    <table class="table" border="1" id="myTable">
+                        <thead bgcolor="lightgray">
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CourseCode)
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Name/Title")
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.SemisterId)
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Assigned To")
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" name="tableBody">
+                            <tr id="tableRow" name="tableRow"></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+        </fieldset>
+    </div>
+
+}
+
+@section scripts
+{
+@Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+    @*<script src="~/Scripts/jquery.validate.min.js"></script>*@
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#DepartmentId").val($("#DepartmentId option:first").val());
+
+              $("#DepartmentId").change(function () {
+
+                var deptId = $("#DepartmentId").val();
+                $("#myTable").empty();
+                var json = { departmentId: deptId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCoursesInformationByDepartmentId", "Courses")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    //data: jQuery.parseJSON(json),
+                    datatype: 'json',
+                    success: function (data) {
+
+                        $('#myTable').append('<thead bgcolor="lightgray"><tr><th>' + "Code" + '</th><th>' + "Name/Title" + '</th><th>' + "Semester" + '</th><th>' + "Assigned To" + '</th></tr> </thead>');
+                        $.each(data, function (i, value) {
+                            //alert(key);
+                          $("#myTable").append('<tr><td>' + value.code + '</td><td>' + value.name + '</td><td>' + value.semester + '</td><td>' + value.teacher + '</td></tr>');
+                        });
+
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Course' + ex);
+                    }
+                });
+            });
+        });
+    </script>
+}

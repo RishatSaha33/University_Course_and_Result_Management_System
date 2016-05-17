@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "ContactUs";
+}
+<style>
+    #over img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+@using (Html.BeginForm("ContactUs","HomePage",FormMethod.Post))
+{
+<div class="row" id="over">
+    <div class="col-sm-3">
+        <div class="panel panel-info">
+            <div class="panel-heading text-center">
+                
+                <img src="~/Images/bakir.jpg" class="img-circle img-responsive" width="80" />
+            </div>
+            <div class="panel-body text-center">
+                <b>Bakir Hossain</b><br/>
+                <b> bakirblab@gmail.com</b><br/>
+                <b>+880 1816409190</b><br/>
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                
+                <img src="~/Images/szn.jpg" class="img-circle img-responsive" width="80" />
+            </div>
+            <div class="panel-body text-center">
+                <b>Azizul Hakim Suzan</b><br/>
+                <b>suzan.cste@gmail.com</b><br/>
+                <b>+880 1912675208</b><br/>
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                
+                <img src="~/Images/mitul.jpg" class="img-circle img-responsive" width="80" />
+            </div>
+            <div class="panel-body text-center"><br/>
+               <br/> <b>Islam ul Haque (Mitul)</b><br/>
+                <b>ihmitul25@gmail.com</b><br/>
+                <b>+880 1670015725</b><br/>
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                
+                <img src="~/Images/risat.jpg" class="img-circle img-responsive" width="80" />
+            </div>
+            <div class="panel-body text-center"><br/>
+                <br/><b>Rishat Saha</b><br/>
+                <b>rishat.saha@gmail.com</b><br/>
+                <b>+880 1672777351</b><br/>
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+
+}

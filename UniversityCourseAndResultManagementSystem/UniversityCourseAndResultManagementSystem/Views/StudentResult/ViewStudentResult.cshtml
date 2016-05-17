@@ -1,0 +1,147 @@
+﻿@model UniversityCourseAndResultManagementSystem.Models.Student
+@{
+    ViewBag.Title = "ViewStudentResult";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <div>
+            <fieldset>
+                <legend> View Result</legend>
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Id, "StudentregNo", htmlAttributes: new {@class = "control-label col-md-2"})
+                    <div>
+                        @Html.DropDownList("StudentId", null, "--Select Registration No--", htmlAttributes: new {@class = "form-control", @id = "StudentId", @name = "StudenttId"})
+                        @Html.ValidationMessageFor(model => model.Id)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.Editor("StudentName", new { htmlAttributes = new { @disabled = "disabled", @readonly = "readonly", @class = "form-control" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Email", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.Editor("StudentEmail", new { htmlAttributes = new { @disabled = "disabled", @readonly = "readonly", @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Department", htmlAttributes: new {@class = "control-label col-md-2"})
+                    <div class="col-md-10">
+                        @Html.Editor("DeptName", new {htmlAttributes = new {@disabled = "disabled", @readonly = "readonly", @class = "form-control"}})
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" id="makePDF" class="btn btn-primary pull-right" style="float: left"><i class="fa fa-plus-square"></i> Make PDF</button>
+                    </div>
+                </div>
+                <div>
+                    <table class="table" border="1" id="myTable">
+                        <thead bgcolor="lightgray">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model=>model.Course)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.StudentName)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.StudentGrade)
+                            </th>
+                        </tr>
+                          </thead>
+                          <tbody id="tableBody" name="tableBody">
+                         <tr id="tableRow" name="tableRow"></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+}
+@section Scripts {
+
+    <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+          
+
+              $("#StudentId").val($("#StudentId option:first").val());
+
+
+               $("#StudentId").change(function () {
+
+                   var sId = $("#StudentId").val();
+
+                $("#StudentName").val("");
+                $("#StudentEmail").val("");
+                $("#DeptName").val("");
+                var json = { studentId: sId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetNameEmailDeptByRegNo", "EnrollStudent")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    //data: jQuery.parseJSON(json),
+                    datatype: 'json',
+                    success: function (data) {
+                        //alert(data);
+                        $.each(data, function (i, value) {
+
+                            $("#StudentName").val(value.name);
+                            $("#StudentEmail").val(value.email);
+                            $("#DeptName").val(value.department);
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Student Information' + ex);
+                    }
+                });
+            });
+
+            $("#StudentId").change(function () {
+
+                var stdntId = $("#StudentId").val();
+                $("#myTable").empty();
+
+                var json = { studentId: stdntId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetEnrolledCoursesNameAndGradeByStudentId", "StudentResult")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    datatype: 'json',
+                    success: function (data) {
+                       
+                        //$("#CourseId").append('<option value="">--Select Course-- </option>');
+                        //$.each(data, function (i, value) {
+                            
+                        //    $("#CourseId").append('<option value=' + value.Value + '>' + value.Text + '</option>');
+                        //});
+                        $('#myTable').append('<thead bgcolor="lightgray"><tr><th>' + "Course Code" + '</th><th>' + "Name" + '</th><th>' + "Grade" + '</th></tr> </thead>');
+                        $.each(data, function (i, value) {
+                           
+                            $("#myTable").append('<tr><td>' + value.CourseCode + '</td><td>' + value.CourseName + '</td><td>' + value.GradeName  + '</td></tr>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Courses' + ex);
+                    }
+                });
+            });
+
+
+        });
+    </script>
+}
+

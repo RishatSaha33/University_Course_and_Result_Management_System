@@ -1,0 +1,158 @@
+﻿  @model UniversityCourseAndResultManagementSystem.Models.Student
+
+@{
+    ViewBag.Title = "SaveResult";
+}
+<style>
+    label.error {
+        color: #B94A48;
+        font-style: normal;
+        font-family: Helvetica;
+        font-size: 12px;
+    }
+ </style>
+
+@using (Html.BeginForm("SaveResult","StudentResult",FormMethod.Post,new {id="myForm"}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Student Result</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Id, "Student Reg. No.", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("StudentId",null,"--Select Registration No--",htmlAttributes:new {@class="form-control", @id="StudentId", @name="StudenttId"})
+                @Html.ValidationMessageFor(model => model.Id)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Editor("StudentName", new { htmlAttributes = new { @disabled = "disabled", @readonly = "readonly", @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Email", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Editor("StudentEmail", new { htmlAttributes = new { @disabled = "disabled", @readonly = "readonly", @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Department", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Editor("DeptName", new { htmlAttributes = new { @disabled = "disabled", @readonly = "readonly", @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Select Course", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("CourseId", new SelectList(string.Empty, "Value", "Text"), "", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Select Grade Letter", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("GradeId", null, "--Select a Grade--", htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<div style="color: green">@ViewBag.Message</div>
+<div style="color: red">@ViewBag.FailMessage</div>
+
+@section Scripts {
+
+    <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#GradeId').val("");
+            $("#myForm").validate({
+                rules: {
+                    StudentId: "required",
+                    CourseId: "required",
+                    GradeId: "required"
+                },
+                messages: {
+                    StudentId: "Please enter student registration No. first ",
+                    CourseId: "Please select a course",
+                    GradeId: "Please select a Grade"
+                }
+            });
+
+              $("#StudentId").val($("#StudentId option:first").val());
+
+
+               $("#StudentId").change(function () {
+
+                   var sId = $("#StudentId").val();
+
+                $("#StudentName").val("");
+                $("#StudentEmail").val("");
+                $("#DeptName").val("");
+                var json = { studentId: sId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetNameEmailDeptByRegNo", "EnrollStudent")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    //data: jQuery.parseJSON(json),
+                    datatype: 'json',
+                    success: function (data) {
+                        //alert(data);
+                        $.each(data, function (i, value) {
+
+                            $("#StudentName").val(value.name);
+                            $("#StudentEmail").val(value.email);
+                            $("#DeptName").val(value.department);
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Student Information' + ex);
+                    }
+                });
+            });
+
+            $("#StudentId").change(function () {
+
+                var stdntId = $("#StudentId").val();
+                $("#CourseId").empty();
+
+                var json = { studentId: stdntId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetEnrolledCoursesByStudentId", "StudentResult")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    //data: jQuery.parseJSON(json),
+                    datatype: 'json',
+                    success: function (data) {
+                        //alert(data);
+                        $("#CourseId").append('<option value="">--Select Course-- </option>');
+                        $.each(data, function (i, value) {
+                            //alert(key);
+                            $("#CourseId").append('<option value=' + value.Value + '>' + value.Text + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Courses' + ex);
+                    }
+                });
+            });
+
+
+        });
+    </script>
+}

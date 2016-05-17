@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>jquery.yesno</id>
+    <version>0.7.1</version>
+    <title>Jquery YesNo dialog</title>
+    <authors>Mirko Budimir</authors>
+    <owners>Mirko Budimir</owners>
+    <projectUrl>https://github.com/MiBu/jquery.yesno</projectUrl>
+    <iconUrl>http://www.gravatar.com/avatar/8b3125bb063d30afd89947cdda569c3b.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Plugin for easy integration of confirmation dialogs to links, buttons, forms using only data- attributes.
+
+Requirements:
+-Twitter bootstrap css
+-Twitter bootstrap modal.js
+
+Demo:
+http://mibu.github.io/jquery.yesno/demo.html</description>
+    <summary>jQuery plugin for easy creating modal confirmation dialogs</summary>
+    <releaseNotes>Initial version with basic functionality. Updated description.</releaseNotes>
+    <language />
+    <tags>jquery javascript confirm modal dialog</tags>
+  </metadata>
+</package>

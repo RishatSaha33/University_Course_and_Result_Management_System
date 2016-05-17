@@ -1,0 +1,205 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - University Course and result management System Application</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        li {
+            text-align: left;
+            color: blue;
+                
+                
+        }
+        body {
+            padding-top: 0px;
+            padding-bottom: 0px;
+            background-color: #F5F5F5;
+        }
+        .navbar-inverse {
+            background-color: #130F57;
+            border-color: #080808;
+        }
+      
+       
+    </style>
+    
+</head>
+
+<body >
+
+    <div class="navbar-wrapper">
+        <div class="container-fluid">
+
+            <nav class="navbar navbar-inverse navbar-static-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="@Url.Action("Index", "HomePage")"><b>UCRMS</b></a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Department <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li> <a href="@Url.Action("SaveDepartment", "Departments")" data-icon="f067"> Department Entry </a></li>
+                                    <li><a href="@Url.Action("ViewDepartment", "Departments")" data-icon="f067"> View All Departments</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Course <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li> <a href="@Url.Action("SaveCourse", "Courses")" data-icon="f067"> Course Entry </a></li>
+                                    <li><a href="@Url.Action("AssignCourse", "Courses")" data-icon="f067"> Course Assign to Teacher</a></li>
+                                    <li> <a href="@Url.Action("CoursesInformation", "Courses")" data-icon="f067">View Course Statics </a></li>
+                                    <li><a href="@Url.Action("UnAssignCourse", "Courses")" data-icon="f067"> Unassign courses</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Teacher <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li> <a href="@Url.Action("SaveTeacher", "Teachers")" data-icon="f067"> Teacher Entry </a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Student <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li> <a href="@Url.Action("RegisterStudent", "Students")" data-icon="f067">Register Student </a></li>
+                                    <li><a href="@Url.Action("StudentEnroll", "EnrollStudent")" data-icon="f067"> Enroll Student</a></li>
+                                    <li> <a href="@Url.Action("SaveResult", "StudentResult")" data-icon="f067">Save Student Result </a></li>
+                                    <li><a href="@Url.Action("ViewStudentResult", "StudentResult")" data-icon="f067"> View Student Result</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Classroom <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li> <a href="@Url.Action("AllocateRoom", "Roomallocation")" data-icon="f067">Allocate Classroom </a></li>
+                                    <li><a href="@Url.Action("GetRoomInformation", "Roomallocation")" data-icon="f067"> View Class Schedule and Room Alocation Information</a></li>
+                                    <li> <a href="@Url.Action("Unallocate", "Roomallocation")" data-icon="f067">Unallocate Room </a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Contact Us <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li> <a href="@Url.Action("ContactUs", "HomePage")" data-icon="f067">Unique-4:A to Z Software Solution </a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+        </div>
+    </div>
+
+
+
+
+@*<div style="text-align: center;color:green">
+    <h1>University Course and Result management System Application</h1>
+</div>
+        
+        <div class="active" style="text-align: center;">
+            <div class="btn-group">
+                <button type="button"  class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Home <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+
+                    <li> <a href="@Url.Action("Index", "HomePage")" data-icon="f067"> Back to Home Page </a></li>
+                   
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Department <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+
+                    <li> <a href="@Url.Action("SaveDepartment", "Departments")" data-icon="f067"> Department Entry </a></li>
+                    <li><a href="@Url.Action("ViewDepartment", "Departments")" data-icon="f067"> View All Departments</a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Course <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+
+                    <li> <a href="@Url.Action("SaveCourse", "Courses")" data-icon="f067"> Course Entry </a></li>
+                    <li><a href="@Url.Action("AssignCourse", "Courses")" data-icon="f067"> Course Assign to Teacher</a></li>
+                    <li> <a href="@Url.Action("CoursesInformation", "Courses")" data-icon="f067">View Course Statics </a></li>
+                    <li><a href="@Url.Action("UnAssignCourse", "Courses")" data-icon="f067"> Unassign courses</a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Teacher <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li> <a href="@Url.Action("SaveTeacher", "Teachers")" data-icon="f067"> Teacher Entry </a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Student <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+
+                    <li> <a href="@Url.Action("RegisterStudent", "Students")" data-icon="f067">Register Student </a></li>
+                    <li><a href="@Url.Action("StudentEnroll", "EnrollStudent")" data-icon="f067"> Enroll Student</a></li>
+                    <li> <a href="@Url.Action("SaveResult", "StudentResult")" data-icon="f067">Save Student Result </a></li>
+                    <li><a href="@Url.Action("ViewStudentResult", "StudentResult")" data-icon="f067"> View Student Result</a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Classroom <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" style="color: green">
+                    <li> <a href="@Url.Action("AllocateRoom", "Roomallocation")" data-icon="f067">Allocate Classroom </a></li>
+                    <li><a href="@Url.Action("GetRoomInformation", "Roomallocation")" data-icon="f067"> View Class Schedule and Room Alocation Information</a></li>
+                    <li> <a href="@Url.Action("Unallocate", "Roomallocation")" data-icon="f067">Unallocate Room </a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-success" style="float: right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Contact Us
+                </button>
+                <ul class="dropdown-menu" style="color: green">
+                    
+                    <li> <a href="@Url.Action("ContactUs", "HomePage")" data-icon="f067">Unique-4:A to Z Software Solution </a></li>
+                </ul>
+            </div>
+        </div>*@
+   
+
+
+<div class="container body-content">
+    @RenderBody()
+    <hr/>
+    <footer>
+        <h6>&copy; Developed by Unique-4</h6>
+        
+    </footer>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+   
+@RenderSection("scripts", required: false)
+
+
+</body>
+</html>

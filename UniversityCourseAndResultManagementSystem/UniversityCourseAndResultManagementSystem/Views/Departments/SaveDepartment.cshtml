@@ -1,0 +1,65 @@
+﻿@model UniversityCourseAndResultManagementSystem.Models.Departmrnt
+
+@{
+    ViewBag.Title = "SaveDepartment";
+    var message = ViewBag.Message;
+}
+
+<h2>Save Department</h2>  
+
+@using (Html.BeginForm()) 
+{
+      
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr/>
+
+                @Html.ValidationSummary(true)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DeptCode, new {@class = "control-label col-md-2"})
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.DeptCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Department Code", @id = "Code", @name = "Code" } })
+                        @Html.ValidationMessageFor(model => model.DeptCode)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DeptName, new {@class = "control-label col-md-2"})
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.DeptName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Department Name", @id = "Name", @name = "Name" } })
+                        @Html.ValidationMessageFor(model => model.DeptName)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-default"/>
+                        <div style="color: green">
+                            <p>@message</p>
+                        </div>
+                    </div>
+                </div>
+                
+         
+        </div>   
+}
+
+<div class="col-md-10" >
+    @Html.ActionLink("Back to view all department page", "ViewDepartment")
+</div>
+
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    
+   @*<script src="~/Scripts/jquery-2.2.3.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $('#Code').val("");
+        $('#Name').val("");
+       
+    });
+</script>*@  
+}

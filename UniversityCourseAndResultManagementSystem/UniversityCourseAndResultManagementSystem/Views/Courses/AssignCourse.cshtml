@@ -1,0 +1,331 @@
+﻿@model UniversityCourseAndResultManagementSystem.Models.Course
+@{
+    ViewBag.Title = "AsssignCourse";
+}
+<link href="~/Scripts/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" />
+<style>
+    label.error, .messageLabel {
+        color: #B94A48;
+        font-style: normal;
+        font-family: Helvetica;
+        font-size: 12px;
+    }
+    .ui-dialog > .ui-widget-header { background: RED;}
+    .no-close .ui-dialog-titlebar-close { display: none;}
+    </style>
+
+@using (Html.BeginForm("AssignCourse", "Courses", FormMethod.Post, new {id="myForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="form-group">
+     </div>
+        <fieldset>
+            <legend>
+                Course Assign to Teacher
+            </legend>
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DepartmentId, "Department", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("DepartmentId", null, "--Select Department--", htmlAttributes: new { @class = "form-control", id = "DepartmentId", name = "DepartmentId" })
+                    @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Teacher", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("TeacherId", new SelectList(string.Empty, "Value", "Text"), "", new { @class = "form-control", id = "TeacherId", name = "TeacherId" })
+                </div>
+
+            </div>
+            <div class="form-group">
+                @Html.Label("Credit to be taken", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.Editor("Credit to be taken", new { htmlAttributes = new { @disabled = "disabled", @readonly = "readonly", @class = "form-control", @id = "Credit_to_be_taken" } })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Remaining Credit", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.Editor("Remaining Credit", new { htmlAttributes = new { @disabled = "disabled", @readonly = "readonly", @class = "form-control", @id = "Remaining_Credit" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Course", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("CourseId", new SelectList(string.Empty, "Value", "Text"), "", new { @class = "form-control", id = "CourseId", name = "CourseId" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.Editor("Name", new { htmlAttributes = new { @disabled = "disabled", @readonly = "readonly", @class = "form-control", id = "Name" } })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Credit", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.Editor("Credit", new { htmlAttributes = new { @disabled = "disabled", @readonly = "readonly", @class = "form-control", @id = "Credit" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input id="submitBtn" name="submitBtn" type="submit" value="Assign" class="btn btn-default" />
+                </div>
+            </div>
+        </fieldset>
+    </div>
+}
+<div class="form-group" id="message">
+    <div class="col-md-offset-2 col-md-10" style="color: GREEN">
+        <label>@ViewBag.SuccessMessage</label>
+    </div>
+    <div class="col-md-offset-2 col-md-10" style="color: #B94A48">
+        <label id="failMessage">@ViewBag.FailMessage</label>
+        <label id="failMessageLabel" name="failMessageLabel"></label>
+    </div>
+</div>
+
+<div id="confirmDialog" title="Confirm">
+    <p>This teacher is assigned to <span id="creditToBeTakenSpan"></span> credit only. Assigning this course will exceed his limit by <span id="statusSpan"></span>. Are you sure you want to assign this course anyway?</p>
+</div>
+
+
+@section Scripts {
+
+    <script src="~/Scripts/jquery-2.2.3.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#message').delay(20000).fadeOut();
+            document.getElementById("failMessageLabel").textContent = "";
+
+            $("#DepartmentId").val($("#DepartmentId option:first").val());
+            $("#myForm").validate({
+                rules: {
+                    DepartmentId: "required",
+                    TeacherId: "required",
+                    CourseId: "required"
+                },
+                messages: {
+                    DepartmentId: "Please select a Department",
+                    TeacherId: "Please select a Teacher",
+                    CourseId: "Please select a Course"
+                }
+            });
+            $("#myForm").submit(function (e) {
+                e.preventDefault();
+                CheckIfCourseIsAlreadyAssigned();
+            });
+
+            $("#DepartmentId").change(function () {
+
+                var deptId = $("#DepartmentId").val();
+                $("#TeacherId").empty();
+                $("#Credit_to_be_taken").val("");
+                $("#Remaining_Credit").val("");
+                $("#Name").val("");
+                $("#Credit").val("");
+                var json = { departmentId: deptId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetTeachersByDepartmentId", "Courses")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    //data: jQuery.parseJSON(json),
+                    datatype: 'json',
+                    success: function (data) {
+                        //alert(data);
+                        $("#TeacherId").append('<option value="">--Select Teacher-- </option>');
+                        $.each(data, function (i, value) {
+                            //alert(key);
+
+                            $("#TeacherId").append('<option value=' + value.Value + '>' + value.Text + '</option>');
+
+                        });
+                    },
+                    error: function(ex) {
+                        alert('Failed to retrieve Teacher' + ex);
+                    }
+                });
+            });
+
+
+
+            $("#DepartmentId").change(function () {
+
+                var deptId = $("#DepartmentId").val();
+                $("#CourseId").empty();
+                $("#Credit_to_be_taken").val("");
+                $("#Remaining_Credit").val("");
+                $("#Name").val("");
+                $("#Credit").val("");
+                var json = { departmentId: deptId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCoursesByDepartmentId", "Courses")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    //data: jQuery.parseJSON(json),
+                    datatype: 'json',
+                    success: function (data) {
+                        $("#CourseId").append('<option value="">--Select Course-- </option>');
+                        //alert(data);
+                        $.each(data, function (i, value) {
+                            //alert(key);
+                            $("#CourseId").append('<option value=' + value.Value + '>' + value.Text + '</option>');
+
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Course' + ex);
+                    }
+                });
+            });
+
+
+            $("#TeacherId").change(function () {
+
+                var tId = $("#TeacherId").val();
+                $("#Credit_to_be_taken").val("");
+                $("#Remaining_Credit").val("");
+                var json = { teacherId: tId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCreditsByTeacherId", "Courses")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    //data: jQuery.parseJSON(json),
+                    datatype: 'json',
+                    success: function (data) {
+                        //alert(data);
+                        $.each(data, function (key, i) {
+
+                            $("#Credit_to_be_taken").val(i.Value);
+                            $("#Remaining_Credit").val(i.Text);
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Credit and Remain Credit' + ex);
+                    }
+                });
+            });
+
+            $("#CourseId").change(function () {
+
+                var cId = $("#CourseId").val();
+                //var remain = 0;
+                //var credit = 0;
+                $("#Name").val("");
+                $("#Credit").val("");
+                var json = { courseId: cId };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetNameAndCreditByCourseId", "Courses")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    //data: jQuery.parseJSON(json),
+                    datatype: 'json',
+                    success: function (data) {
+                        //alert(data);
+                        $.each(data, function (key, i) {
+                            //alert(key);
+                            $("#Name").val(i.Value);
+                            $("#Credit").val(i.Text);
+
+                             //credit = $('#Credit').val();
+                        });
+                    },
+                    error: function (ex) {
+                        alert('Failed to retrieve Name and Credit' + ex);
+                    }
+                });
+
+            });
+
+            });
+            $('#confirmDialog').dialog({
+                autoOpen: false,
+                dialogClass: "no-close",
+                width: 450,
+                modal: true,
+                resizable: false,
+                buttons: {
+                    "Yes": function () {
+                        document.getElementById("myForm").submit();
+                        document.getElementById("myForm").reset();
+                    },
+                    "No": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+
+            function CheckIfCourseIsAlreadyAssigned() {
+                var course = $("#CourseId").val();
+                var json = { courseId: course };
+                
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("CheckIfCourseIsAlreadyAssigned", "Courses")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        if (data.toString() == "") {
+                            CheckIfCreditExceeds();
+                        } else {
+                            document.getElementById("failMessageLabel").innerText = "";
+                            document.getElementById("failMessageLabel").innerText = data.toString();
+                            document.getElementById("myForm").reset();
+                        }
+                    }
+                });
+            }
+
+        function CheckIfCreditExceeds() {
+                var field;
+                var confirmDiv;
+
+                field = $("#Credit_to_be_taken");
+                confirmDiv = $("#creditToBeTakenSpan");
+                if (field.val() == '') {
+                    confirmDiv.parent().hide();
+                } else {
+                    confirmDiv.parent().show();
+                    confirmDiv.html(field.val());
+                }
+
+                field = $("#Remaining_Credit");
+                var field2 = $("#Credit");
+                confirmDiv = $("#statusSpan");
+                if (field.val() == "") {
+                    confirmDiv.parent().hide();
+                } else {
+                    confirmDiv.parent().show();
+                    confirmDiv.html(field.val() - field2.val());
+                }
+
+                var creditToBeTaken = $('#Credit_to_be_taken').val();
+                var remainingCredit = $('#Remaining_Credit').val();
+                var courseCredit = $('#Credit').val();
+                var creditStatus = remainingCredit - courseCredit;
+
+                if (creditStatus <= 0 && creditToBeTaken != 0) {
+                    $('#confirmDialog').dialog('open');
+                } else {
+                    document.getElementById("myForm").submit();
+                    document.getElementById("myForm").reset();
+                }
+            }
+       
+    </script>
+}
